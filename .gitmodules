@@ -1,0 +1,3 @@
+[submodule "agent-centric-representations"]
+	path = agent-centric-representations
+	url = https://github.com/manantomar/agent-centric-representations
