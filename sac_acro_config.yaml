@@ -1,0 +1,83 @@
+env:
+  name: HalfCheetah-v4
+  task: ""
+  library: gymnasium
+  max_episode_steps: 1000
+  seed: 42
+
+collector:
+  total_frames:       1_000_000
+  init_random_frames:   25_000
+  frames_per_batch:       1000
+  init_env_steps:         1000
+  device: "cuda:0"
+  env_per_collector: 8
+  reset_at_each_iter: false
+
+replay_buffer:
+  size:        1_000_000
+  prb:                 0
+  scratch_dir:
+
+optim:
+  utd_ratio:            1.0
+  gamma:                0.99
+  loss_function:        l2
+  lr:                   3.0e-4
+  weight_decay:         0.0
+  batch_size:           256
+  target_update_polyak: 0.995
+  alpha_init:           1.0
+  adam_eps:             1.0e-8
+
+network:
+  hidden_sizes:         [256, 256]
+  activation:           relu
+  default_policy_scale: 1.0
+  scale_lb:             0.1
+  device: "cuda:0"
+
+logger:
+  backend:      wandb
+  project_name: torchrl_example_sac
+  group_name:
+  exp_name:     ${env.name}_SAC_ACRO
+  mode:         online
+  eval_iter:    25_000
+  video:        false
+
+compile:
+  compile:       false
+  compile_mode:
+  cudagraphs:    false
+
+acro:
+  lr:             1e-4
+  feature_dim:    256
+  frame_stack:    3
+  action_repeat:  2
+  discount:       0.99
+  batch_size:     256
+
+  num_seed_frames:     4000   # random actions before ACRO starts updating
+  pretrain_num_frames: 30000  # pure rep-learning before SAC updates kick in
+
+  offline:                false
+  bc_weight:              2.5
+  use_bc:                 true
+  cql_importance_sample:  false
+  temp:                   1.0
+  min_q_weight:           1.0
+  num_random:             10
+  with_lagrange:          false
+  lagrange_thresh:        0.0
+
+  save_snapshot:   false
+  save_video:      true
+  save_train_video: false
+  seed:            1
+  device:          "cuda:0"
+
+checkpoint:
+  interval_frames: 100_000
+  save_dir: /datastor1/sarthakd/snapshots
