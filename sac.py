@@ -14,6 +14,10 @@ from __future__ import annotations
 
 import warnings
 
+import os
+os.environ["MUJOCO_GL"] = "egl"  # or "osmesa"
+
+
 import hydra
 import numpy as np
 import torch
@@ -25,7 +29,7 @@ from torchrl._utils import compile_with_warmup, timeit
 from torchrl.envs.utils import ExplorationType, set_exploration_type
 from torchrl.objectives import group_optimizers
 from torchrl.record.loggers import generate_exp_name, get_logger
-from utils import (
+from utils_sac import (
     dump_video,
     log_metrics,
     make_collector,
@@ -111,6 +115,7 @@ def main(cfg: DictConfig):  # noqa: F821
     del optimizer_actor, optimizer_critic, optimizer_alpha
 
     def update(sampled_tensordict):
+        sampled_tensordict = sampled_tensordict.to(device)
         # Compute loss
         loss_td = loss_module(sampled_tensordict)
 
